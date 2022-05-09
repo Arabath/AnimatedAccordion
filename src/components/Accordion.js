@@ -1,81 +1,66 @@
 import React from 'react'
-import  './styles.sass'
+import AccordionItem from './AccordionItem';
 
-const paragraph = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
 
-const data = [
-    {
-      title: 'Pricing plans',
-      paragraph
-    },
-    {
-      title: 'How to apply',
-      paragraph
-    },
-    {
-      title: 'Purchasing process',
-      paragraph
-    },
-    {
-      title: 'Usage guides',
-      paragraph
-    }
-  ]
-
-export default function Accordion() {
-    return (
-        <div {...{ className: 'wrapper' }}>
-          <ul {...{ className: 'accordion-list' }}>
-            {data.map((data, key) => {
-              return (
-                <li {...{ className: 'accordion-list__item', key }}>
-                  <AccordionItem {...data} />
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      )
+class Accordion extends React.Component {
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			activeTab: 0
+		};
+		
+		this.activateTab = this.activateTab.bind(this);
+	}
+	
+	activateTab(index) {
+		this.setState(prev => ({
+			activeTab: prev.activeTab === index ? -1 : index
+		}));
+	}
+	
+	render() {
+		const { panels } = this.props;
+		const { activeTab } = this.state;
+		return (
+			<div className='accordion' role='tablist'>
+				{panels.map((panel, index) =>
+					<AccordionItem
+						key={ index }
+						activeTab={ activeTab }
+						index={ index }
+						{ ...panel } 
+						activateTab={ this.activateTab.bind(null, index) }
+					/>
+				)}
+			</div>
+		);
+	}
 }
 
-class AccordionItem extends React.Component {
-    state = {
-      opened: false
-    }
-    
-    render () {
-      const {
-        props: {
-          paragraph,
-          title
-        },
-        state: {
-          opened
-        }
-      } = this
-      
-      return (
-        <div
-          {...{
-            className: `accordion-item, ${opened && 'accordion-item--opened'}`,
-            onClick: () => { this.setState({ opened: !opened }) }
-          }}
-        >
-          <div {...{ className: 'accordion-item__line' }}>
-            <h3 {...{ className: 'accordion-item__title' }}>
-              {title}
-            </h3>
-            <span {...{ className: 'accordion-item__icon' }}/>
-          </div>
-            <div {...{ className: 'accordion-item__inner' }}>
-              <div {...{ className: 'accordion-item__content' }}>
-                <p {...{ className: 'accordion-item__paragraph' }}>
-                  {paragraph}
-                </p>
-              </div>
-            </div>
-        </div>
-      )
-    }
-  }
-  
+const panels = [
+	{
+		label: 'Label 1',
+		content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
+	},
+	{
+		label: 'Label 2',
+		content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
+	},	
+	{
+		label: 'Label 3',
+		content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
+	},
+	{
+		label: 'Label 4',
+		content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
+	},
+	{
+		label: 'Label 5',
+		content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+	},
+];
+
+const App = document.querySelector('#app');
+
+ReactDOM.render(<Accordion panels={ panels }/>, App);
